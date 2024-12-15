@@ -40,7 +40,7 @@ class LivroController extends Controller
             'titulo' => $request->titulo,
             'autor_id' => $request->autor_id,
             'numero_registro' => $request->numero_registro,
-            'situacao' => 'Disponível'
+            'situacao' => Livro::DISPONIVEL
         ]);
         $livro->generos()->attach($request->generos);
         

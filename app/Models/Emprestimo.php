@@ -9,6 +9,10 @@ class Emprestimo extends Model
 {
     protected $table = 'emprestimos';
     protected $fillable = ['usuario_id', 'livro_id', 'dt_limite_devolucao', 'dt_devolucao'];
+    protected $casts = [
+        'dt_limite_devolucao' => 'datetime',
+        'dt_devolucao' => 'datetime'
+    ];
 
     public function usuario(): BelongsTo
     {

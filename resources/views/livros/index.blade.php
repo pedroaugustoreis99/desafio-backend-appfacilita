@@ -7,6 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
+    @include('layouts.menu')
+
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Listagem de Livros</h1>
@@ -41,7 +44,7 @@
                             <td>{{ $livro->titulo }}</td>
                             <td>{{ $livro->autor->nome }}</td>
                             <td>
-                                <span class="badge bg-{{ $livro->situacao === 'disponivel' ? 'success' : 'warning' }}">
+                                <span class="badge bg-{{ $livro->situacao === 'Disponível' ? 'success' : 'warning' }}">
                                     {{ ucfirst($livro->situacao) }}
                                 </span>
                             </td>

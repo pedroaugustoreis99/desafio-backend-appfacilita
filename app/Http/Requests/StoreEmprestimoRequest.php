@@ -24,7 +24,7 @@ class StoreEmprestimoRequest extends FormRequest
         return [
             'usuario_id' => 'required|exists:usuarios,id',
             'livro_id' => 'required|exists:livros,id',
-            'dt_limite_devolucao' => 'required|date'
+            'dt_limite_devolucao' => 'required|date',
         ];
     }
 

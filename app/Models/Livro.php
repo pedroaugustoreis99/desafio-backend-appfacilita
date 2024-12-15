@@ -10,6 +10,8 @@ class Livro extends Model
 {
     protected $table = 'livros';
     protected $fillable = ['titulo', 'autor_id', 'numero_registro', 'situacao'];
+    const EMPRESTADO = "Emprestado";
+    const DISPONIVEL = "Disponível";
 
     /*
      * Relacionamento n para n com a tabela generos

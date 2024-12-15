@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAutorRequest extends FormRequest
 {
@@ -22,7 +23,10 @@ class UpdateAutorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => 'required|unique:autores|max:255'
+            'nome' => [
+                'required',
+                Rule::unique('autores')->ignore($this->autor),
+                'max:255']
         ];
     }
 

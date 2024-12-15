@@ -15,7 +15,7 @@ class EmprestimoController extends Controller
      */
     public function index()
     {
-        //
+        return view('emprestimos.index', ['emprestimos' => Emprestimo::all()]);
     }
 
     /**
@@ -25,7 +25,7 @@ class EmprestimoController extends Controller
     {
         return view('emprestimos.create', [
             'usuarios' => Usuario::all(),
-            'livros' => Livro::where('situacao', 'Disponível')->get()
+            'livros' => Livro::where('situacao', Livro::DISPONIVEL)->get()
         ]);
     }
 
@@ -34,7 +34,21 @@ class EmprestimoController extends Controller
      */
     public function store(StoreEmprestimoRequest $request)
     {
-        dd($request);
+        $emprestimo = Emprestimo::create([
+            'usuario_id' => $request->usuario_id,
+            'livro_id' => $request->livro_id,
+            'dt_limite_devolucao' => $request->dt_limite_devolucao,
+            'dt_devolucao' => isset($request->dt_devolucao) ? $request->dt_devolucao : null,
+        ]);
+
+        if ($emprestimo->dt_devolucao == null) {
+            $emprestimo->livro->situacao = Livro::EMPRESTADO;
+        } else {
+            $emprestimo->livro->situacao = Livro::DISPONIVEL;
+        }
+        $emprestimo->livro->save();
+        
+        return redirect()->route('emprestimos.show', ['emprestimo' => $emprestimo]);
     }
 
     /**
@@ -42,7 +56,7 @@ class EmprestimoController extends Controller
      */
     public function show(Emprestimo $emprestimo)
     {
-        //
+        return view('emprestimos.show', ['emprestimo' => $emprestimo]);
     }
 
     /**
@@ -50,7 +64,11 @@ class EmprestimoController extends Controller
      */
     public function edit(Emprestimo $emprestimo)
     {
-        //
+        return view('emprestimos.edit', [
+            'emprestimo' => $emprestimo,
+            'usuarios' => Usuario::all(),
+            'livros' => Livro::where('situacao', Livro::DISPONIVEL)->orWhere('id', $emprestimo->livro->id)->get()
+        ]);
     }
 
     /**
@@ -58,7 +76,18 @@ class EmprestimoController extends Controller
      */
     public function update(UpdateEmprestimoRequest $request, Emprestimo $emprestimo)
     {
-        //
+        $emprestimo->fill($request->validated());
+        !isset($request->dt_devolucao) ? $emprestimo->dt_devolucao = null : $emprestimo->dt_devolucao = $request->dt_devolucao;
+        $emprestimo->save();
+
+        if ($emprestimo->dt_devolucao == null) {
+            $emprestimo->livro->situacao = Livro::EMPRESTADO;
+        } else {
+            $emprestimo->livro->situacao = Livro::DISPONIVEL;
+        }
+        $emprestimo->livro->save();
+        
+        return redirect()->route('emprestimos.show', ['emprestimo' => $emprestimo]);
     }
 
     /**
@@ -66,6 +95,11 @@ class EmprestimoController extends Controller
      */
     public function destroy(Emprestimo $emprestimo)
     {
-        //
+        $livro = $emprestimo->livro;
+        $livro->situacao = Livro::DISPONIVEL;
+        $livro->save();
+        $emprestimo->delete();
+
+        return redirect()->route('emprestimos.index');
     }
 }
